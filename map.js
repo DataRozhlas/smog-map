@@ -12,7 +12,7 @@ L.tileLayer('https://samizdat.cz/tiles/ton_b1/{z}/{x}/{y}.png', {
 var labels = L.tileLayer('https://samizdat.cz/tiles/ton_l2/{z}/{x}/{y}.png')
 
 var idx = {
-    0: {'Color': 'FFFFFF', 'ColorText': '000000', 'Description': 'Neúplná data'},
+    0: {'Color': 'FFFFFF', 'ColorText': '000000', 'Description': 'neúplná data'},
     1: {'Color': '4393c3', 'ColorText': '000000', 'Description': 'velmi dobrá'},
     2: {'Color': 'fddbc7', 'ColorText': '000000', 'Description': 'dobrá'},
     3: {'Color': 'f4a582', 'ColorText': '000000', 'Description': 'uspokojivá'},
@@ -29,15 +29,23 @@ var colors = {
     'O3': 'rgba(255,127,0, .5)'
 };
 
+function stationColor(val) {
+    if (val <= 1.2118) {return '#2c7bb6'}
+    else if (val <= 1.7290) {return '#abd9e9'}
+    else if (val <= 2.0614) {return '#ffffbf'}
+    else if (val <= 2.4012) {return '#fdae61'}
+        else {return '#d7191c'}
+};
+
 $.getJSON('data/stations.json', function(data) {
     $.each(data, function(key, val){
         var ccle = L.circleMarker(L.latLng(val.lat, val.lon), {
-            radius: 8,
+            radius: 9,
             weight: 1,
             opacity: 0.5,
-            color: '#' + idx[Math.round(val.ix)].Color,
-            fillColor: '#' + idx[Math.round(val.ix)].Color,
-            fillOpacity: 0.3,
+            color: '#737373',
+            fillColor: stationColor(val.ix),
+            fillOpacity: 0.6,
             stationId: key,
             vals: val
         })
@@ -80,11 +88,14 @@ function drawChart(stationId, details) {
             chart: {
                 type: 'scatter'
             },
+            credits: {
+                enabled: false
+            },
             title: {
                 text: 'Stanice ' + details.vals.name + ', kraj ' + details.vals.region_name+ ', ' + details.vals.state_name
             },
             subtitle: {
-                text: 'Nejčastější úroveň znečištění: ' + details.vals.ix + ' (' + idx[details.vals.ix].Description + ')'
+                text: 'Průměrná úroveň znečištění: ' + Math.round(details.vals.ix) + ' (' + idx[Math.round(details.vals.ix)].Description + ')'
             },
             xAxis: {
                 type: 'datetime',
