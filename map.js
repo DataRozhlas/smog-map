@@ -23,15 +23,16 @@ var idx = {
 
 var colors = {
     'NO2': 'rgba(228,26,28, .5)',
+    'SO2': 'rgba(166,86,40, .5)',
     'CO': 'rgba(55,126,184, .5)',
     'PM10': 'rgba(77,175,74, .5)',
     'PM2_5': 'rgba(152,78,163, .5)',
-    'O3': 'rgba(255,127,0, .5)'
+    'O3': 'rgba(255,127,0, .5)',
 };
 
 function stationColor(val) {
-    if (val <= 1.2118) {return '#2c7bb6'}
-    else if (val <= 1.7290) {return '#abd9e9'}
+    if (val <= 1.2118) {return '#1a9641'}
+    else if (val <= 1.7290) {return '#a6d96a'}
     else if (val <= 2.0614) {return '#ffffbf'}
     else if (val <= 2.4012) {return '#fdae61'}
         else {return '#d7191c'}
@@ -109,9 +110,19 @@ function drawChart(stationId, details) {
             },
             yAxis: {
                 title: {
-                    text: 'znečištění'
+                    useHTML: true,
+                    text: 'Koncentrace škodlivin (μg/m<sup>3</sup>)'
                 },
-                min: 0
+                min: 0,
+                plotLines: [{
+                    color: 'rgba(77,175,74, 1)',
+                    dashStyle: 'shortdot',
+                    value: 50,
+                    width: 2,
+                    label: {
+                        text: 'Limitní hodnota PM10'
+                    }   
+                  }]
             },
             tooltip: {
                 headerFormat: '<b>Částice {series.name}</b><br>',
